@@ -21,6 +21,7 @@ type Ctx struct {
 	appMiddlewareIndex   int
 	groupMiddlewareIndex int
 	routerPath           string
+	queryPath            string
 }
 
 // Sending application/json response
@@ -79,7 +80,7 @@ func (ctx *Ctx) SendAttachment(filePath, fileName string) error {
 
 // uploads file to given path
 func (ctx *Ctx) UploadFile(filePath, fileName string) error {
-	if err:= ctx.Request.ParseForm(); err != nil {
+	if err := ctx.Request.ParseForm(); err != nil {
 		return err
 	}
 	defer ctx.Request.Body.Close()
@@ -123,6 +124,14 @@ func (ctx *Ctx) GetParam(name string) string {
 
 func (ctx *Ctx) GetParams() map[string]string {
 	return getParamsFromPath(ctx.routerPath, ctx.Request.URL.Path)
+}
+
+func (ctx *Ctx) GetQueryParam(name string) string {
+	return getQueryParam(ctx.queryPath, name)
+}
+
+func (ctx *Ctx) GetQueryParams() map[string]string {
+	return getAllQueryParams(ctx.queryPath)
 }
 
 func getRouterContext(w http.ResponseWriter, r *http.Request, ferry *Ferry) *Ctx {

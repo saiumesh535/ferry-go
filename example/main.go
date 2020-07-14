@@ -22,7 +22,7 @@ func main() {
 	app := ferry.InitServer(&config)
 
 	notFoundHandler := func(ctx *ferry.Ctx) error {
-		return ctx.Redirect(http.StatusMovedPermanently, "http://localhost:3000")
+		return ctx.Redirect(http.StatusMovedPermanently, "https://google.com")
 	}
 
 	app.HandleNotFound(notFoundHandler)
@@ -78,6 +78,15 @@ func main() {
 		})
 	})
 
+	app.Get("/hello", func(ctx *ferry.Ctx) error {
+		params := ctx.GetQueryParams()
+		return ctx.Json(http.StatusOK, params)
+	})
+
+	app.Get("/hello/single", func(ctx *ferry.Ctx) error {
+		params := ctx.GetQueryParam("key")
+		return ctx.Send(http.StatusOK, fmt.Sprintf("key is %s", params))
+	})
 	// group routing
 	auth := app.Group("/auth")
 	auth.Delete("/authdelete", func(ctx *ferry.Ctx) error {
